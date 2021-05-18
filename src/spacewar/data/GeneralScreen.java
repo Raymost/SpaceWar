@@ -8,14 +8,15 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class GeneralScreen extends Scene {
-    public static final int GAME_WIDTH = 0;
-    public static final int GAME_HEIGHT = 0;
+    public static final int GAME_WIDTH = 700;
+    public static final int GAME_HEIGHT = 800;
 
-    private StackPane root = new StackPane();
+    private StackPane root;
     protected GraphicsContext gc;
     protected Set<KeyCode> activeKeys;
     protected Set<KeyCode> releasedKeys;

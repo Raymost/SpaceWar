@@ -19,7 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class InGameScreen extends GeneralScreen{
-    private static final String BACKGROUND_IMAGE= "";
+    private static final String BACKGROUND_IMAGE="assets/starfield_intro.png";
     public static final String BACKGROUND_SONG= "";
     public static final String SOUND_EFFECT= "";
 
@@ -46,12 +46,13 @@ public class InGameScreen extends GeneralScreen{
     public void draw() {
         reset();
 
+        /*
         // Launches music
         sound= new Media(new File(BACKGROUND_SONG).toURI().toString());
         mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.play();
-
+        */
         activeKeys.clear();
         ship.moveTo(380, 375);
         new AnimationTimer()
@@ -64,13 +65,17 @@ public class InGameScreen extends GeneralScreen{
 
                 gc.drawImage(background,0,0);
                 ship.draw(gc);
+                /*
                 if (badShip != null)
                     badShip.draw(gc);
+
+                 */
+
                 updateHUD();
 
                 if(activeKeys.contains(KeyCode.SPACE)) {
                     this.stop();
-                    SpaceWar.setScene(SpaceWar.INTRO_SCREEN);
+                    SpaceWar.setScene(SpaceWar.GAME_OVER_SCREEN);
                 } else if (activeKeys.contains(KeyCode.ESCAPE)) {
                     this.stop();
                     SpaceWar.setScene(SpaceWar.CREDITS_SCREEN);
@@ -110,7 +115,7 @@ public class InGameScreen extends GeneralScreen{
                     }
                 }
 
-                 */
+
 
                 if (lives == 0){
                     this.stop();
@@ -118,6 +123,8 @@ public class InGameScreen extends GeneralScreen{
                     SpaceWar.setScene(
                             SpaceWar.CREDITS_SCREEN);
                 }
+
+                 */
             }
         }.start();
     }

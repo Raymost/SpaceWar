@@ -1,12 +1,12 @@
 package spacewar.sprite;
 
 public class AnimatedSprite extends Sprite {
-    public static final int TOTAL_MOVEMENTS = 0;
+    public static final int TOTAL_MOVEMENTS = 4;
     public static final int RIGHT = 0;
     public static final int LEFT = 1;
-    public static final int UP = 0;
-    public static final int DOWN = 1;
-    public static final byte SPRITE_CHANGE= 0;
+    public static final int UP = 2;
+    public static final int DOWN = 3;
+    public static final byte SPRITE_CHANGE= 2;
 
     protected int currentDirection;
     protected byte currentSprite;
