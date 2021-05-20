@@ -13,6 +13,7 @@ public class BadShip1 extends Ships implements Shoot{
     private final int SHOOT_MOVEMENT=8;
 
 
+
     public BadShip1( int lives) {
         super(lives, BAD_SHIP_WIDTH, BAD_SHIP_HEIGHT);
         // Create the sprite

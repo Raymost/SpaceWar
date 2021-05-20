@@ -90,14 +90,18 @@ public class InGameScreen extends GeneralScreen{
 
                 // Enemy render loop.
                 for (int i=0; i < enemy1.size(); i++){
-                    enemy1.get(i).draw(gc);
+
                 }
                 // Collisions between ships
                 collisions();
+                // Exit to Game Over when player is dead
+                /*
                 if (playerDeath){
                     this.stop();
                     SpaceWar.exit();
                 }
+
+                 */
             }
         }.start();
     }
@@ -106,20 +110,48 @@ public class InGameScreen extends GeneralScreen{
         // Collisions with enemy1
         for (int i = 0; i < enemy1.size(); i++) {
             if (enemy1.get(i).collidesWith(ship)){
-                if (enemy1.get(i).getLives() > 0){
-                    enemy1.get(i).setLives(-1);
-                    playEffect(SOUND_EFFECT);
-                    if (enemy1.get(i).getLives() == 0){
-                        enemy1.remove(i);
-                        points +=20;
-                    }
+                enemy1.get(i).setLives(-1);
+                //playEffect(SOUND_EFFECT);
+                if (enemy1.get(i).getLives() == 0){
+                    points +=20;
                 }
-                if (ship.getLives() > 0){
+                if (ship.getLives() >= 0){
                     ship.setLives(lives--);
+                    ship.initialPosition();
                     if (ship.getLives() == 0)
                         playerDeath = true;
-                ship.initialPosition();
                 }
+               // System.out.println(enemy1.get(i).getLives());
+            } else if (enemy1.get(i).getLives() > 0){
+                enemy1.get(i).draw(gc);
+            }
+        }
+    }
+
+    private void enemyNoLives(int enemy,int i, int posX, int posY){
+        if (enemy == 1) {
+            if (enemy1.get(i).getLives() > 0)
+                enemy1.get(i).moveTo(posX, posY);
+            else {
+                enemy1.get(i).moveTo(-150, 881);
+            }
+        } else if (enemy == 2) {
+            if (enemy2.get(i).getLives() > 0)
+                enemy2.get(i).moveTo(posX, posY);
+            else {
+                enemy2.get(i).moveTo(-150, 881);
+            }
+        } else if (enemy == 3) {
+            if (enemy3.get(i).getLives() > 0)
+                enemy3.get(i).moveTo(posX, posY);
+            else {
+                enemy3.get(i).moveTo(-150, 881);
+            }
+        } else if (enemy == 4) {
+            if (enemy3.get(i).getLives() > 0)
+                enemy3.get(i).moveTo(posX, posY);
+            else {
+                enemy3.get(i).moveTo(-150, 881);
             }
         }
     }
@@ -128,13 +160,12 @@ public class InGameScreen extends GeneralScreen{
         int posX;
         int posY;
 
-        // enemyListRefill(positionCount);
-
         if (positionCount==0){
+            enemyListRefill();
             posX=50;
             posY=-90;
             for (int i=0; i < enemy1.size(); i++){
-                enemy1.get(i).moveTo(posX,posY);
+                enemyNoLives(1,i,posX,posY);
                 posX += 100;
                 posY -= 90;
             }
@@ -148,10 +179,11 @@ public class InGameScreen extends GeneralScreen{
             }
         }
         if (positionCount==2){
+            enemyListRefill();
             posX=-90;
             posY=0;
             for (int i=0; i < enemy1.size(); i++){
-                enemy1.get(i).moveTo(posX,posY);
+                enemyNoLives(1,i,posX,posY);
                 posX -= 100;
                 posY -= 90;
             }
@@ -165,10 +197,11 @@ public class InGameScreen extends GeneralScreen{
             }
         }
         if (positionCount==4){
+            enemyListRefill();
             posX=-90;
             posY=200;
             for (int i=0; i < enemy1.size(); i++){
-                enemy1.get(i).moveTo(posX,posY);
+                enemyNoLives(1,i,posX,posY);
                 posX -= 100;
             }
             positionCount++;
@@ -176,20 +209,18 @@ public class InGameScreen extends GeneralScreen{
             for (int i=0; i < enemy1.size(); i++){
                 enemy1.get(i).movement(2,1);
             }
-            if (enemy1.get(5).getY() >= GAME_HEIGHT + 81){
+            if (enemy1.get(5).getX() >= GAME_WIDTH +
+                    BadShip1.BAD_SHIP_WIDTH){
                 positionCount=0;
             }
         }
     }
 
-    private void enemyListRefill(int when) {
-        if (when == 0 || when == 2 || when == 4) {
-            if (enemy1.size() < MAX_ENEMYS) {
-                int count = MAX_ENEMYS - enemy1.size();
-                for (int i = 0; i < count; i++) {
-                    enemy1.add(new BadShip1(2));
-                }
-            }
+    private void enemyListRefill() {
+        enemy1.clear();
+        for (int i = 0; i < MAX_ENEMYS; i++) {
+            enemy1.add(new BadShip1(2));
+            enemy1.get(i).setLives(2);
         }
     }
 
@@ -197,18 +228,22 @@ public class InGameScreen extends GeneralScreen{
         // Declare all ships
         for (int i=0; i < MAX_ENEMYS; i++){
             enemy1.add(new BadShip1(2));
+            enemy1.get(i).setLives(2);
         }
 
         for (int i=0; i < MAX_ENEMYS; i++){
-            enemy2.add(new BadShip2(2));
+            enemy2.add(new BadShip2(4));
+            enemy2.get(i).setLives(4);
         }
 
         for (int i=0; i < MAX_ENEMYS; i++){
-            enemy3.add(new BadShip3(2));
+            enemy3.add(new BadShip3(8));
+            enemy3.get(i).setLives(8);
         }
 
         for (int i=0; i < MAX_ENEMYS; i++){
-            enemy4.add(new BadShip4(2));
+            enemy4.add(new BadShip4(16));
+            enemy4.get(i).setLives(16);
         }
 
         boss = new Boss(1000);

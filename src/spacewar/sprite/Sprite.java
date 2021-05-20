@@ -1,5 +1,6 @@
 package spacewar.sprite;
 
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
@@ -32,9 +33,11 @@ public class Sprite {
         gc.drawImage(spriteImage, spriteX,spriteY,
                 width,height,x,y,width,height);
     }
+    public Rectangle2D getBoundary() {
+        return new Rectangle2D(x, y, width, height);
+    }
 
     public boolean collidesWith(Sprite sp){
-        return (x + width / 2 > sp.x && x < sp.x + sp.width /2 &&
-                y + height / 2 > sp.y && y < sp.y + sp.height / 2);
+        return sp.getBoundary().intersects(this.getBoundary());
     }
 }
