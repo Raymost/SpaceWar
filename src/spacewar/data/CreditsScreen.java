@@ -38,7 +38,7 @@ public class CreditsScreen extends GeneralScreen{
 
                 showCredits(move);
                 move--;
-                if(activeKeys.contains(KeyCode.SPACE)) {
+                if(activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
                     SpaceWar.setScene(SpaceWar.MENU_SCREEN);
                 } else if (activeKeys.contains(KeyCode.ESCAPE)) {

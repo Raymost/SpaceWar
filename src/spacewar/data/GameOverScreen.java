@@ -53,7 +53,7 @@ public class GameOverScreen extends GeneralScreen{
 
                 showGameOverMessage();
 
-                if(activeKeys.contains(KeyCode.SPACE)) {
+                if(activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
                     SpaceWar.setScene(SpaceWar.HIGHSCORES_SCREEN);
                 } else if (activeKeys.contains(KeyCode.ESCAPE)) {

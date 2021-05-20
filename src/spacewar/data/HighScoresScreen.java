@@ -12,8 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HighScoresScreen extends GeneralScreen{
-    public static int score=0;
+    public static int score;
     private String name;
+
+    public HighScoresScreen(){
+        super();
+        showHighScores();
+    }
 
     public HighScoresScreen(int score, String name){
         super();
@@ -55,7 +60,7 @@ public class HighScoresScreen extends GeneralScreen{
 
                 showHighScores();
 
-                if(activeKeys.contains(KeyCode.SPACE)) {
+                if(activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
                     SpaceWar.setScene(SpaceWar.CREDITS_SCREEN);
                 } else if (activeKeys.contains(KeyCode.ESCAPE)) {

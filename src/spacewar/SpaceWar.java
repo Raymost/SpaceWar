@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import spacewar.data.*;
 
+// Joaquin Ferreras Torralba
+
 public class SpaceWar extends Application {
     public static final int MAX_SCENES = 6;
     public static final int INTRO_SCREEN = 0;
@@ -26,7 +28,7 @@ public class SpaceWar extends Application {
         scenes[1] = new MenuScreen();
         scenes[2] = new InGameScreen();
         scenes[3] = new GameOverScreen();
-        scenes[4] = new HighScoresScreen(0, "name");
+        scenes[4] = new HighScoresScreen();
         scenes[5] = new CreditsScreen();
 
 
