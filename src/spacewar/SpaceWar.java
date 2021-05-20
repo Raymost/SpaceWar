@@ -27,7 +27,7 @@ public class SpaceWar extends Application {
         scenes[2] = new InGameScreen();
         scenes[3] = new GameOverScreen();
         scenes[4] = new HighScoresScreen(0, "name");
-        scenes[5] = new CreditsScreen(0, "name");
+        scenes[5] = new CreditsScreen();
 
 
         stage.setTitle("SpaceWar");

@@ -14,31 +14,35 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class IntroScreen extends GeneralScreen{
-    public static final String BACKGROUND_IMAGE="assets/starfield_intro.png";
+    private static final String BACKGROUND_IMAGE="assets/starfield_intro.png";
+    private static final String SHIP_IMAGE="assets/goodship_intro.png";
     public static final String INTRO_SONG="";
+    public double move=-1800;
+    public double ship_move=-100;
 
     private Image background;
+    private Image goodship;
 
     public IntroScreen() {
         super();
         showIntro();
         try {
             background = new Image(Files.newInputStream(Paths.get(BACKGROUND_IMAGE)));
+            goodship = new Image(Files.newInputStream(Paths.get(SHIP_IMAGE)));
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
     private void showIntro() {
-        Font myFont = Font.font("Arial", FontWeight.NORMAL, 32);
+        Font myFont = Font.font("Arial", FontWeight.NORMAL, 25);
         gc.setFont(myFont);
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0,0,700,150);
+        gc.fillRect(0,650,700,150);
         gc.setFill(Color.RED);
-        gc.fillText("Space WAR", 275, 200);
-
-        myFont = Font.font("Arial", FontWeight.NORMAL, 20);
-        gc.setFont(myFont);
-        gc.setFill(Color.RED);
-        gc.fillText("Press Spacebar to play", 325, 275);
+        gc.fillText("Deep space, a explorer ship travels to a galaxy", 50, 700);
+        gc.fillText("searching for new planets for life, until now...", 50, 730);
     }
 
     @Override
@@ -52,9 +56,11 @@ public class IntroScreen extends GeneralScreen{
                 gc.setFill(Color.BLACK);
                 gc.fillRect(0,0,GAME_WIDTH,GAME_HEIGHT);
 
-                gc.drawImage(background,0,0);
+                gc.drawImage(background,move,0);
+                gc.drawImage(goodship,ship_move,100);
                 showIntro();
-
+                move=move+0.5;
+                ship_move=ship_move+0.2;
 
                 if(activeKeys.contains(KeyCode.SPACE)) {
                     this.stop();

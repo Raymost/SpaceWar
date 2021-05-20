@@ -6,24 +6,23 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import spacewar.SpaceWar;
 
 public class CreditsScreen extends GeneralScreen{
-    public CreditsScreen(int score, String name){
+    private static int move=825;
+
+    public CreditsScreen(){
         super();
-        showCredits();
+        showCredits(0);
     }
 
-    private void showCredits() {
+    private void showCredits(int move) {
         Font myFont = Font.font("Arial", FontWeight.NORMAL, 32);
         gc.setFont(myFont);
-        gc.setFill(Color.RED);
-        gc.fillText("Credits", 275, 200);
-
-        myFont = Font.font("Arial", FontWeight.NORMAL, 20);
-        gc.setFont(myFont);
-        gc.setFill(Color.RED);
-        gc.fillText("Press Spacebar to next", 325, 275);
+        gc.setFill(Color.WHITESMOKE);
+        gc.fillText("Developed by", GAME_WIDTH / 2 - 75,move);
+        gc.fillText("Joaquin Ferreras Torralba", GAME_WIDTH / 2 - 125,move+40);
     }
 
     @Override
@@ -37,8 +36,8 @@ public class CreditsScreen extends GeneralScreen{
                 gc.setFill(Color.BLACK);
                 gc.fillRect(0,0,GAME_WIDTH,GAME_HEIGHT);
 
-                showCredits();
-
+                showCredits(move);
+                move--;
                 if(activeKeys.contains(KeyCode.SPACE)) {
                     this.stop();
                     SpaceWar.setScene(SpaceWar.MENU_SCREEN);

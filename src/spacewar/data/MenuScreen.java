@@ -64,7 +64,6 @@ public class MenuScreen extends GeneralScreen{
                 gc.setFill(Color.BLACK);
                 gc.fillRect(0,0,GAME_WIDTH,GAME_HEIGHT);
                 gc.drawImage(background,0,0);
-                showMenu();
 
                 if(activeKeys.contains(KeyCode.SPACE)) {
                     this.stop();
@@ -72,6 +71,8 @@ public class MenuScreen extends GeneralScreen{
                 } else if (activeKeys.contains(KeyCode.ESCAPE)) {
                     this.stop();
                     SpaceWar.exit();
+                } else if(activeKeys.contains(KeyCode.DOWN)) {
+                    // TO DO
                 }
             }
         }.start();

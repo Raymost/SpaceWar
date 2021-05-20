@@ -17,7 +17,7 @@ public class AnimatedSprite extends Sprite {
 
     public AnimatedSprite(int width, int height) {
         super(width, height);
-        currentDirection = RIGHT;
+        currentDirection = UP;
         currentSprite = 0;
         currentSpriteChange =0;
     }

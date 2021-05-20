@@ -1,17 +1,10 @@
 package spacewar.sprite;
 
-import javafx.scene.image.Image;
-
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 public abstract class Ships extends AnimatedSprite{
     private int lives;
 
     public Ships(int lives,int width,int height) {
         super(width, height);
-        // TO DO
     }
     public int getLives() {
         return lives;
@@ -21,11 +14,7 @@ public abstract class Ships extends AnimatedSprite{
         this.lives = lives;
     }
 
-    public void movement(int movement){
-        // TO DO
-    }
+    public abstract void movement(int movement,int movement2);
 
-    public void initialPosition(){
-        // TO DO
-    }
+    public abstract void initialPosition();
 }
