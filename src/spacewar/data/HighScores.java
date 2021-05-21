@@ -1,18 +1,7 @@
 package spacewar.data;
 
-
-import javafx.animation.AnimationTimer;
-import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import spacewar.SpaceWar;
-
-import java.util.Comparator;
-
 public class HighScores  {
     public int score;
-
     private String name;
 
     public HighScores(int score, String name){
@@ -32,5 +21,10 @@ public class HighScores  {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    @Override
+    public String toString() {
+        return score + " - " + name;
     }
 }

@@ -90,7 +90,7 @@ public class HighScoresScreen extends InGameScreen {
         if (onlyOne) {
             if (activeKeys.contains(KeyCode.ENTER)) {
                 endWrite = false;
-                loadPoints();
+                //loadPoints();
                 highScores.add(new HighScores(InGameScreen.points, writeText));
                 saveScore(highScores);
                 onlyOne = false;

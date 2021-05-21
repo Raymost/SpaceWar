@@ -7,7 +7,7 @@ import spacewar.data.*;
 // Joaquin Ferreras Torralba
 
 public class SpaceWar extends Application {
-    public static final int MAX_SCENES = 6;
+    public static final int MAX_SCENES = 7;
     public static final int INTRO_SCREEN = 0;
     public static final int MENU_SCREEN = 1;
     public static final int IN_GAME_SCREEN = 2;

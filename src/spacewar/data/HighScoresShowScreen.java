@@ -21,7 +21,7 @@ import java.util.List;
 public class HighScoresShowScreen extends GeneralScreen {
     private static final String NAMEFILE = "highscores.dat";
     private static final String BACKGROUND_IMAGE="assets/starfield_intro.png";
-    private final ArrayList<HighScores> highScores = loadScore();
+    private ArrayList<HighScores> highScores = loadScore();
     private Image background;
 
     public HighScoresShowScreen() throws IOException {
@@ -45,10 +45,15 @@ public class HighScoresShowScreen extends GeneralScreen {
         gc.setFill(Color.YELLOWGREEN);
         gc.applyEffect(new DropShadow(5,Color.BLACK));
         gc.setEffect(bloom);
-        for (int i = 0; i < 10; i++) {
-            String line = highScores.get(i).getScore() + " - " + highScores.get(i).getName();
-            gc.fillText(line, 300, 400);
+        int x=300;
+        int y=400;
+        for (HighScores h: highScores) {
+            gc.fillText(h.toString(), x, y);
+            System.out.println(h);
+            y+=50;
         }
+            //gc.fillText(line, 300, 400);
+
     }
 
     @Override
@@ -89,15 +94,19 @@ public class HighScoresShowScreen extends GeneralScreen {
                     String[] items = line.split(";");
                     scores.add(new HighScores(Integer.parseInt(items[0]),
                             items[1]));
+                    System.out.println(scores.get(0));
+                    System.out.println(items.length + "comemelo todo");
+                    System.out.println(Integer.parseInt(items[0]) + items[1]);
+                    System.out.println(line);
                     line = inputFile.readLine();
                 }
                 inputFile.close();
-
             } catch (IOException fileError){
                 System.out.println("We have a problem: " +
                                 fileError.getMessage());
             }
         }
+        System.out.println(scores.get(0) + "pollas");
         return scores;
     }
 }
