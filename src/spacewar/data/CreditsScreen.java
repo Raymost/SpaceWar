@@ -3,15 +3,25 @@ package spacewar.data;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import spacewar.SpaceWar;
 
+import java.io.File;
+
+/**
+ * This class show the credits
+ */
 public class CreditsScreen extends GeneralScreen{
+    private static final String MENU_SONG="assets/music/menu_music.mp3";
     private static int move=825;
 
+    /**
+     * Only defines the credits
+     */
     public CreditsScreen(){
         super();
         showCredits(0);
@@ -27,6 +37,11 @@ public class CreditsScreen extends GeneralScreen{
 
     @Override
     public void draw() {
+        sound= new Media(new File(MENU_SONG).toURI().toString());
+        mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.play();
+
         activeKeys.clear();
         new AnimationTimer()
         {
@@ -40,6 +55,7 @@ public class CreditsScreen extends GeneralScreen{
                 move--;
                 if(activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
+                    mediaPlayer.stop();
                     SpaceWar.setScene(SpaceWar.MENU_SCREEN);
                 } else if (activeKeys.contains(KeyCode.ESCAPE)) {
                     this.stop();

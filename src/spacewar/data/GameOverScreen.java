@@ -28,22 +28,16 @@ public class GameOverScreen extends GeneralScreen{
 
         Font myFont = Font.font("System", FontWeight.NORMAL, 50);
         gc.setFont(myFont);
-        gc.setFill(Color.GREENYELLOW);
+        gc.setFill(Color.RED);
         gc.setEffect(bloom);
         gc.applyEffect(new DropShadow(5,Color.BLACK));
-        gc.fillText("GAME OVER", 275, 200);
+        gc.fillText("GAME OVER", 200, 200);
 
         myFont = Font.font("Arial", FontWeight.NORMAL, 30);
         gc.setFont(myFont);
         gc.setFill(Color.YELLOWGREEN);
         gc.applyEffect(new DropShadow(5,Color.BLACK));
-        gc.fillText("Press Spacebar to next", 300, 300);
-    }
-    private void playEffect(String sound){}
-
-    private void putYourName(List<HighScores> name)
-    {
-        // TO DO
+        gc.fillText("Press Spacebar to next", 200, 300);
     }
 
     @Override
@@ -60,8 +54,9 @@ public class GameOverScreen extends GeneralScreen{
 
                 showGameOverMessage();
 
-                if(activeKeys.contains(KeyCode.SPACE)) {
+                if(activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
+                    mediaPlayer.stop();
                     SpaceWar.setScene(SpaceWar.HIGHSCORES_SCREEN);
                 } else if (activeKeys.contains(KeyCode.ESCAPE)) {
                     this.stop();

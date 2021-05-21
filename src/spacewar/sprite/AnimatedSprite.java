@@ -1,5 +1,9 @@
 package spacewar.sprite;
 
+/**
+ * Class prepared for animation
+ */
+
 public class AnimatedSprite extends Sprite {
     public static final int TOTAL_MOVEMENTS = 5;
     public static final int RIGHT = 0;
@@ -16,6 +20,12 @@ public class AnimatedSprite extends Sprite {
     protected int[][] spriteXCoordinates = new int[TOTAL_MOVEMENTS][];
     protected int[][] spriteYCoordinates = new int[TOTAL_MOVEMENTS][];
 
+    /**
+     * Constructor of the class receive the width and height of
+     * the sprite
+     * @param width width of the sprite
+     * @param height height of the sprite
+     */
     public AnimatedSprite(int width, int height) {
         super(width, height);
         currentDirection = UP;
@@ -23,6 +33,10 @@ public class AnimatedSprite extends Sprite {
         currentSpriteChange =0;
     }
 
+    /**
+     * Method for animation if press a key
+     * @param movement a int for selection
+     */
     public void animate(int movement){
         if (movement != currentDirection){
             currentDirection = movement;
@@ -39,6 +53,9 @@ public class AnimatedSprite extends Sprite {
         updateSpriteCoordinates();
     }
 
+    /**
+     * This method upgrades sprites positions
+     */
     protected void updateSpriteCoordinates(){
         spriteX = spriteXCoordinates[currentDirection][currentSprite];
         spriteY = spriteYCoordinates[currentDirection][currentSprite];

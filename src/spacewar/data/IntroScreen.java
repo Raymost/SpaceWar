@@ -4,18 +4,21 @@ package spacewar.data;
 import javafx.animation.AnimationTimer;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import spacewar.SpaceWar;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class IntroScreen extends GeneralScreen{
     private static final String BACKGROUND_IMAGE="assets/starfield_intro.png";
     private static final String SHIP_IMAGE="assets/goodship_intro.png";
-    public static final String INTRO_SONG="";
+    public static final String INTRO_SONG="assets/music/intro_music.wav";
     public double move=-1800;
     public double ship_move=0;
 
@@ -48,6 +51,12 @@ public class IntroScreen extends GeneralScreen{
 
     @Override
     public void draw() {
+        // Launches music
+        sound= new Media(new File(INTRO_SONG).toURI().toString());
+        mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.play();
+
         activeKeys.clear();
         new AnimationTimer()
         {
@@ -64,14 +73,9 @@ public class IntroScreen extends GeneralScreen{
                 move=move+0.5;
                 ship_move=ship_move+0.2;
 
-                // QUITAR ESTO ANTES DE ENTREGAR
-                if(activeKeys.contains(KeyCode.SPACE)) {
-                    this.stop();
-                    SpaceWar.setScene(SpaceWar.IN_GAME_SCREEN);
-                }
-
                 if(activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
+                    mediaPlayer.stop();
                     SpaceWar.setScene(SpaceWar.MENU_SCREEN);
                 } else if (activeKeys.contains(KeyCode.ESCAPE)) {
                     this.stop();

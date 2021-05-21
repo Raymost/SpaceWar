@@ -20,7 +20,7 @@ public class MenuScreen extends GeneralScreen{
     private static final String BACKGROUND_IMAGE="assets/title_menu.png";
     private static final String[] BUTTONS={"assets/start_button_on.png",
             "assets/highscore_button_on.png","assets/exit_button_on.png"};
-    private static final String MENU_SONG="";
+    private static final String MENU_SONG="assets/music/menu_music.mp3";
     private static final String SOUND_EFFECT="";
     private static int count=3;
 
@@ -43,12 +43,10 @@ public class MenuScreen extends GeneralScreen{
 
     @Override
     public void draw() {
-      /*  sound= new Media(new File(MENU_SONG).toURI().toString());
+        sound= new Media(new File(MENU_SONG).toURI().toString());
         mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.play();
-
-       */
 
         activeKeys.clear();
         new AnimationTimer()
@@ -84,9 +82,11 @@ public class MenuScreen extends GeneralScreen{
                 // Selected item in menu
                 if( count == 0 && activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
+                    mediaPlayer.stop();
                     SpaceWar.setScene(SpaceWar.IN_GAME_SCREEN);
                 } else if( count >= 1 && count <= 5 && activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
+                    mediaPlayer.stop();
                     SpaceWar.setScene(SpaceWar.HIGHSCORES_SHOW_SCREEN);
                 } else if( count == 6 && activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();

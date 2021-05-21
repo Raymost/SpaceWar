@@ -6,6 +6,9 @@ import spacewar.data.*;
 
 // Joaquin Ferreras Torralba
 
+/**
+ * The main class defines the scenes
+ */
 public class SpaceWar extends Application {
     public static final int MAX_SCENES = 7;
     public static final int INTRO_SCREEN = 0;
@@ -21,6 +24,11 @@ public class SpaceWar extends Application {
 
     public static Stage stage;
 
+    /**
+     * This method load the scenes
+     * @param stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
@@ -39,14 +47,22 @@ public class SpaceWar extends Application {
         stage.show();
     }
 
+    /**
+     * This method change the number of the scene
+     * @param numScene
+     */
     public static void setScene(int numScene){
         stage.setScene(scenes[numScene]);
         scenes[numScene].draw();
     }
 
+    /**
+     * This method allows you to quit the application
+     */
     public static void exit(){
         stage.hide();
     }
+
     public static void main(String[] args) {
         launch(args);}
 }

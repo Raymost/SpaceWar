@@ -6,6 +6,8 @@ import javafx.scene.effect.Bloom;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -22,6 +24,7 @@ import java.util.Locale;
 public class HighScoresShowScreen extends GeneralScreen {
     private static final String NAMEFILE = "highscores.dat";
     private static final String BACKGROUND_IMAGE="assets/starfield_intro.png";
+    private static final String HIGHSCORES_SONG="assets/music/highscore_music.wav";
     private ArrayList<HighScores> highScores = loadScore();
     private Image background;
 
@@ -48,14 +51,20 @@ public class HighScoresShowScreen extends GeneralScreen {
         gc.setEffect(bloom);
         int x=250;
         int y=200;
-        for (HighScores h: highScores) {
-            gc.fillText(h.toString().toUpperCase(), x, y);
+        for (int i = 0; i < 10; i++) {
+            gc.fillText(highScores.get(i).toString().toUpperCase(), x, y);
             y+=50;
         }
     }
 
     @Override
     public void draw() {
+
+        sound= new Media(new File(HIGHSCORES_SONG).toURI().toString());
+        mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.play();
+
         highScores = loadScore();
         activeKeys.clear();
         new AnimationTimer()
@@ -68,8 +77,9 @@ public class HighScoresShowScreen extends GeneralScreen {
                 gc.drawImage(background,0,0);
                 showHighScore();
 
-                if(activeKeys.contains(KeyCode.SPACE) || activeKeys.contains(KeyCode.ENTER)) {
+                if(activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
+                    mediaPlayer.stop();
                     SpaceWar.setScene(SpaceWar.CREDITS_SCREEN);
                 }
                 if (activeKeys.contains(KeyCode.ESCAPE)) {

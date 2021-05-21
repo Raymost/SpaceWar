@@ -6,6 +6,8 @@ import javafx.scene.effect.Bloom;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -22,6 +24,7 @@ import java.util.List;
 public class HighScoresScreen extends InGameScreen {
     private static final String NAMEFILE = "highscores.dat";
     private static final String BACKGROUND_IMAGE="assets/starfield_intro.png";
+    private static final String HIGHSCORES_SONG="assets/music/highscore_music.wav";
     private static String writeText="";
     private ArrayList<HighScores> highScores = loadScore();
     private static boolean endWrite=true;
@@ -35,29 +38,33 @@ public class HighScoresScreen extends InGameScreen {
     }
 
     private void showWriteYourName() {
-        Font myFont = Font.font("Arial", FontWeight.NORMAL, 40);
+        Font myFont = Font.font("Arial", FontWeight.NORMAL, 50);
         gc.setFont(myFont);
         gc.setFill(Color.YELLOWGREEN);
         gc.applyEffect(new DropShadow(5,Color.BLACK));
-        gc.fillText("HIGHSCORES", 350, 200);
+        gc.fillText("HIGHSCORES", 200, 100);
 
         gc.setFill(Color.RED);
         gc.applyEffect(new DropShadow(5,Color.BLACK));
-        gc.fillText("Write Your Name:", 275, 275);
+        gc.fillText("Write Your Name:", 100, 275);
 
         Bloom bloom = new Bloom();
         bloom.setThreshold(0.1);
 
-        myFont = Font.font("System", FontWeight.NORMAL, 30);
+        myFont = Font.font("System", FontWeight.NORMAL, 50);
         gc.setFont(myFont);
         gc.setFill(Color.YELLOWGREEN);
         gc.applyEffect(new DropShadow(5,Color.BLACK));
         gc.setEffect(bloom);
-        gc.fillText(writeText, 300, 400);
+        gc.fillText(writeText, 100, 400);
     }
 
     @Override
     public void draw() {
+        sound= new Media(new File(HIGHSCORES_SONG).toURI().toString());
+        mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.play();
 
         activeKeys.clear();
         new AnimationTimer()
@@ -73,8 +80,9 @@ public class HighScoresScreen extends InGameScreen {
                     showWriteYourName();
                 }
 
-                if(activeKeys.contains(KeyCode.SPACE)) {
+                if(activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
+                    mediaPlayer.stop();
                     SpaceWar.setScene(SpaceWar.HIGHSCORES_SHOW_SCREEN);
                 }
 
@@ -91,6 +99,7 @@ public class HighScoresScreen extends InGameScreen {
         highScores.add(new HighScores(InGameScreen.points, writeText));
         saveScore(highScores);
         highScores = loadScore();
+        mediaPlayer.stop();
         SpaceWar.setScene(SpaceWar.HIGHSCORES_SHOW_SCREEN);
     }
 

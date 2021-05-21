@@ -26,7 +26,8 @@ import java.util.List;
 public class InGameScreen extends GeneralScreen{
     private static final String BACKGROUND_IMAGE="assets/starfield_intro.png";
     private static final String BACKGROUND_SONG= "assets/music/ingame_music.mp3";
-    private static final String SOUND_EFFECT= "";
+    private static final String SOUND_EFFECT= "assets/effects/explosion.wav";
+    private static final String SOUND_SHOOT= "assets/effects/shoot.mp3";
     private static final int MAX_ENEMYS=6;
     private static int positionCount=0;
     private static boolean playerDeath=false;
@@ -34,6 +35,7 @@ public class InGameScreen extends GeneralScreen{
     private static boolean bossDeath=false;
     private static int enemyDead=0;
     private static int shootCounter=0;
+    private static double move;
 
     private Image background;
     private static List<GoodShoot> goodShoot = new ArrayList<>();
@@ -80,12 +82,14 @@ public class InGameScreen extends GeneralScreen{
                 gc.setFill(Color.BLACK);
                 gc.fillRect(0,0,GAME_WIDTH,GAME_HEIGHT);
 
-                gc.drawImage(background,0,0);
+                gc.drawImage(background,0,move);
+                move=move+0.1;
                 ship.draw(gc);
                 updateHUD();
 
                 if(activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
+                    mediaPlayer.stop();
                     SpaceWar.setScene(SpaceWar.GAME_OVER_SCREEN);
                 } else if (activeKeys.contains(KeyCode.ESCAPE)) {
                     this.stop();
@@ -108,6 +112,7 @@ public class InGameScreen extends GeneralScreen{
                 // Exit to Game Over when player is dead
                 if (playerDeath || bossDeath){
                     this.stop();
+                    mediaPlayer.stop();
                     SpaceWar.setScene(SpaceWar.GAME_OVER_SCREEN);
                 }
 
@@ -141,6 +146,7 @@ public class InGameScreen extends GeneralScreen{
         int lastShoot = goodShoot.size() - 1;
         goodShoot.get(lastShoot).
                 initialPosition(ship.getX(),ship.getY());
+        playEffect(SOUND_SHOOT);
     }
 
     private void badShootInitialize(int place){
@@ -191,11 +197,13 @@ public class InGameScreen extends GeneralScreen{
         for (BadShip1 ship1 : enemy1) {
             if (ship1.collidesWith(ship)) {
                 ship1.setLives(-1);
-                ship.setLives(lives--);
+                ship.hit();
                 ship.initialPosition();
                 points += 20;
                 enemyDead++;
-                //playEffect(SOUND_EFFECT);
+                playEffect(SOUND_EFFECT);
+                if (ship.getLives() == 0)
+                    playerDeath = true;
             }
             // Deleting shoot if collides
             for (int i = 0; i < goodShoot.size(); i++) {
@@ -204,25 +212,23 @@ public class InGameScreen extends GeneralScreen{
                     points += 20;
                     goodShoot.remove(i);
                     enemyDead++;
-                    //playEffect(SOUND_EFFECT);
+                    playEffect(SOUND_EFFECT);
                 }else if (boss.collidesWith(goodShoot.get(i))){
                     boss.hit();
                     goodShoot.remove(i);
                     if (boss.getLives() > 0){
                         bossDeath = false;
                     } else if (boss.getLives() == 0) {
-                       // bossDeath = true;
+                       bossDeath = true;
                     }
                 }
-                //if (ship.getLives() == 0)
-                    // playerDeath = true;
             }
             // Deleting bad shoot if collides
             for (int i = 0; i < badShoot.size(); i++) {
                 if (ship.collidesWith(badShoot.get(i))) {
-                    ship.setLives(lives--);
+                    ship.hit();
                     badShoot.remove(i);
-                    //playEffect(SOUND_EFFECT);
+                    playEffect(SOUND_EFFECT);
                     if (ship.getLives() == 0)
                         playerDeath = true;
                 }
@@ -348,7 +354,7 @@ public class InGameScreen extends GeneralScreen{
 
         boss = new Boss(20);
 
-        ship= new GoodShip(lives);
+        ship= new GoodShip(4);
     }
 
     private void keyPress(){

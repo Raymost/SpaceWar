@@ -6,12 +6,19 @@ import spacewar.data.GeneralScreen;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * The players ship
+ */
 public class GoodShip extends Ships {
     public static final int GOOD_SHIP_WIDTH = 60;
     public static final int GOOD_SHIP_HEIGHT = 64;
     private static final String IMAGE_PATH = "assets/goodship.png";
     private static final int SHIP_MOVEMENT = 6;
 
+    /**
+     * Constructor for define sprites of the ship
+     * @param lives
+     */
     public GoodShip(int lives) {
         super(lives, GOOD_SHIP_WIDTH, GOOD_SHIP_HEIGHT);
         try{
@@ -31,6 +38,12 @@ public class GoodShip extends Ships {
 
         updateSpriteCoordinates();
     }
+
+    /**
+     * Movement of the ship on key pressed
+     * @param movement for one key
+     * @param movement2 for two keys pressed
+     */
     @Override
     public void movement(int movement, int movement2){
         int newY = y;
@@ -69,7 +82,9 @@ public class GoodShip extends Ships {
        animate(movement);
     }
 
-
+    /**
+     * Method of the initial position of the ship
+     */
     public void initialPosition(){
         // The initial position of the ship
        moveTo( 300,
