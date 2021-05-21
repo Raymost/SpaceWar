@@ -1,6 +1,7 @@
 package spacewar.data;
 
 import javafx.animation.AnimationTimer;
+import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -26,8 +27,10 @@ public class InGameScreen extends GeneralScreen{
     private static final int MAX_ENEMYS=6;
     private static int positionCount=0;
     private static boolean playerDeath=false;
+    private static boolean shootMore=true;
 
     private Image background;
+    private static List<GoodShoot> goodShoot = new ArrayList<>();
     private GoodShip ship;
     private static List<BadShip1> enemy1 = new ArrayList<>();
     private static List<BadShip2> enemy2 = new ArrayList<>();
@@ -36,7 +39,7 @@ public class InGameScreen extends GeneralScreen{
     private Boss boss;
     private MediaPlayer mediaPlayerEffects;
     private Media effect;
-    private int lives = 5;
+    private int lives = 6;
     private int points = 0;
 
     public InGameScreen()
@@ -88,42 +91,64 @@ public class InGameScreen extends GeneralScreen{
                 // Enemy movement
                 enemy1Movement();
 
-                // Enemy render loop.
-                for (int i=0; i < enemy1.size(); i++){
-
-                }
                 // Collisions between ships
                 collisions();
+
                 // Exit to Game Over when player is dead
-                /*
                 if (playerDeath){
                     this.stop();
-                    SpaceWar.exit();
+                    SpaceWar.setScene(SpaceWar.GAME_OVER_SCREEN);
                 }
 
-                 */
+                // Shoots of the Good ship
+                goodShootMovement();
             }
         }.start();
+
+    } private void goodShootInitialize(){
+        // Set initial position of the shoot
+        goodShoot.add(new GoodShoot());
+        int lastShoot = goodShoot.size() - 1;
+        goodShoot.get(lastShoot).
+                initialPosition(ship.getX(),ship.getY());
     }
 
-    private void collisions(){
-        // Collisions with enemy1
-        for (int i = 0; i < enemy1.size(); i++) {
-            if (enemy1.get(i).collidesWith(ship)){
-                enemy1.get(i).setLives(-1);
+    private void goodShootMovement(){
+        // Movement of the shoot
+        for (int i = 0; i < goodShoot.size(); i++) {
+            if (goodShoot.get(i) !=null ){
+                goodShoot.get(i).draw(gc);
+                goodShoot.get(i).movement(1);
+            }
+            // Removing a shoot
+            if (goodShoot.get(i).getX() == 0  ||
+                    goodShoot.get(i).getY() == 0){
+                goodShoot.remove(i);
+            }
+        }
+    }
+
+    private void collisions() {
+        // Collisions with enemy1 and shoot
+        for (BadShip1 ship1 : enemy1) {
+            if (ship1.collidesWith(ship)) {
+                ship1.setLives(-1);
+                ship.setLives(lives--);
+                ship.initialPosition();
+                points += 20;
                 //playEffect(SOUND_EFFECT);
-                if (enemy1.get(i).getLives() == 0){
-                    points +=20;
+                if (ship.getLives() == 0)
+                    playerDeath = true;
+            }
+            for (GoodShoot shoot : goodShoot) {
+                if (ship1.collidesWith(shoot)) {
+                    ship1.setLives(-1);
+                    points += 20;
+                    //playEffect(SOUND_EFFECT);
                 }
-                if (ship.getLives() >= 0){
-                    ship.setLives(lives--);
-                    ship.initialPosition();
-                    if (ship.getLives() == 0)
-                        playerDeath = true;
-                }
-               // System.out.println(enemy1.get(i).getLives());
-            } else if (enemy1.get(i).getLives() > 0){
-                enemy1.get(i).draw(gc);
+            }
+            if (ship1.getLives() > 0) {
+                ship1.draw(gc);
             }
         }
     }
@@ -133,25 +158,25 @@ public class InGameScreen extends GeneralScreen{
             if (enemy1.get(i).getLives() > 0)
                 enemy1.get(i).moveTo(posX, posY);
             else {
-                enemy1.get(i).moveTo(-150, 881);
+                enemy1.get(i).moveTo(-150, 900);
             }
         } else if (enemy == 2) {
             if (enemy2.get(i).getLives() > 0)
                 enemy2.get(i).moveTo(posX, posY);
             else {
-                enemy2.get(i).moveTo(-150, 881);
+                enemy2.get(i).moveTo(-150, 900);
             }
         } else if (enemy == 3) {
             if (enemy3.get(i).getLives() > 0)
                 enemy3.get(i).moveTo(posX, posY);
             else {
-                enemy3.get(i).moveTo(-150, 881);
+                enemy3.get(i).moveTo(-150, 900);
             }
         } else if (enemy == 4) {
             if (enemy3.get(i).getLives() > 0)
                 enemy3.get(i).moveTo(posX, posY);
             else {
-                enemy3.get(i).moveTo(-150, 881);
+                enemy3.get(i).moveTo(-150, 900);
             }
         }
     }
@@ -159,7 +184,7 @@ public class InGameScreen extends GeneralScreen{
     private void enemy1Movement(){
         int posX;
         int posY;
-
+        // Set initial position of the wave
         if (positionCount==0){
             enemyListRefill();
             posX=50;
@@ -170,9 +195,10 @@ public class InGameScreen extends GeneralScreen{
                 posY -= 90;
             }
             positionCount++;
+        // Doing the movement
         } else if (positionCount==1){
-            for (int i=0; i < enemy1.size(); i++){
-                enemy1.get(i).movement(0,1);
+            for (BadShip1 badShip1 : enemy1) {
+                badShip1.movement(0, 1);
             }
             if (enemy1.get(5).getY() >= GAME_HEIGHT + 81){
                 positionCount++;
@@ -189,8 +215,8 @@ public class InGameScreen extends GeneralScreen{
             }
             positionCount++;
         } else if (positionCount==3){
-            for (int i=0; i < enemy1.size(); i++){
-                enemy1.get(i).movement(1,1);
+            for (BadShip1 badShip1 : enemy1) {
+                badShip1.movement(1, 1);
             }
             if (enemy1.get(5).getY() >= GAME_HEIGHT + 81){
                 positionCount++;
@@ -206,8 +232,8 @@ public class InGameScreen extends GeneralScreen{
             }
             positionCount++;
         } else if (positionCount==5){
-            for (int i=0; i < enemy1.size(); i++){
-                enemy1.get(i).movement(2,1);
+            for (BadShip1 badShip1 : enemy1) {
+                badShip1.movement(2, 1);
             }
             if (enemy1.get(5).getX() >= GAME_WIDTH +
                     BadShip1.BAD_SHIP_WIDTH){
@@ -217,32 +243,33 @@ public class InGameScreen extends GeneralScreen{
     }
 
     private void enemyListRefill() {
+        // Refill ships after a wave
         enemy1.clear();
         for (int i = 0; i < MAX_ENEMYS; i++) {
-            enemy1.add(new BadShip1(2));
-            enemy1.get(i).setLives(2);
+            enemy1.add(new BadShip1(1));
+            enemy1.get(i).setLives(1);
         }
     }
 
     private void shipsCharge(){
         // Declare all ships
         for (int i=0; i < MAX_ENEMYS; i++){
-            enemy1.add(new BadShip1(2));
-            enemy1.get(i).setLives(2);
+            enemy1.add(new BadShip1(1));
+            enemy1.get(i).setLives(1);
         }
 
         for (int i=0; i < MAX_ENEMYS; i++){
-            enemy2.add(new BadShip2(4));
+            enemy2.add(new BadShip2(1));
             enemy2.get(i).setLives(4);
         }
 
         for (int i=0; i < MAX_ENEMYS; i++){
-            enemy3.add(new BadShip3(8));
+            enemy3.add(new BadShip3(1));
             enemy3.get(i).setLives(8);
         }
 
         for (int i=0; i < MAX_ENEMYS; i++){
-            enemy4.add(new BadShip4(16));
+            enemy4.add(new BadShip4(1));
             enemy4.get(i).setLives(16);
         }
 
@@ -251,7 +278,7 @@ public class InGameScreen extends GeneralScreen{
     }
 
     private void keyPress(){
-        // What happen when press a key
+        // Player Movement keys
         if (activeKeys.contains(KeyCode.LEFT) && activeKeys.contains(KeyCode.DOWN) ){
             ship.movement(GoodShip.LEFT,GoodShip.DOWN);
         }else if (activeKeys.contains(KeyCode.RIGHT) && activeKeys.contains(KeyCode.DOWN)){
@@ -269,6 +296,14 @@ public class InGameScreen extends GeneralScreen{
         }else if (activeKeys.contains(KeyCode.DOWN)){
             ship.movement(GoodShip.DOWN,7);
         }
+        // Shooting key
+        if(activeKeys.contains(KeyCode.C)) {
+           if(shootMore)
+            goodShootInitialize();
+            shootMore=false;
+        }
+        if(releasedKeys.contains(KeyCode.C))
+            shootMore=true;
     }
 
     private void playEffect(String path){
@@ -284,7 +319,7 @@ public class InGameScreen extends GeneralScreen{
     }
 
     private void updateHUD(){
-        Font myFont = Font.font("Arial",FontWeight.NORMAL,18);
+        Font myFont = Font.font("System",FontWeight.NORMAL,18);
         gc.setFont(myFont);
         gc.setFill(Color.YELLOWGREEN);
         gc.setEffect(new DropShadow(5,Color.BLACK));

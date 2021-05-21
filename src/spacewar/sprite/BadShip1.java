@@ -5,14 +5,11 @@ import javafx.scene.image.Image;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class BadShip1 extends Ships implements Shoot{
-    public static final int BAD_SHIP_WIDTH = 76;
-    public static final int BAD_SHIP_HEIGHT = 80;
+public class BadShip1 extends Ships {
+    public static final int BAD_SHIP_WIDTH = 72;
+    public static final int BAD_SHIP_HEIGHT = 75;
     private static final String IMAGE_PATH = "assets/badship1.png";
     private static final int SHIP_MOVEMENT = 3;
-    private final int SHOOT_MOVEMENT=8;
-
-
 
     public BadShip1( int lives) {
         super(lives, BAD_SHIP_WIDTH, BAD_SHIP_HEIGHT);
@@ -35,6 +32,9 @@ public class BadShip1 extends Ships implements Shoot{
             this.y+=(1 + SHIP_MOVEMENT);
         } else if (movement == 2) {
             this.x+=(1 + SHIP_MOVEMENT);
+        } else if (movement == 3) {
+            this.x-=(1 + SHIP_MOVEMENT);
+            this.y-=(1 + SHIP_MOVEMENT);
         }
    }
 
@@ -43,6 +43,7 @@ public class BadShip1 extends Ships implements Shoot{
        moveTo( 300,
                300);
     }
+    /*
     @Override
     public void shootingSelect(int shoot) {
         this.y+= (int) (1 + SHOOT_MOVEMENT);
@@ -57,4 +58,6 @@ public class BadShip1 extends Ships implements Shoot{
     public void normalShoot() {
         this.y+= (int) (1 + SHOOT_MOVEMENT);
     }
+
+     */
 }

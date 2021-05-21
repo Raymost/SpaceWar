@@ -5,10 +5,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,8 +17,6 @@ public abstract class GeneralScreen extends Scene {
     protected GraphicsContext gc;
     protected Set<KeyCode> activeKeys;
     protected Set<KeyCode> releasedKeys;
-    protected MediaPlayer mediaPlayer;
-    protected Media sound;
 
     public GeneralScreen() {
         // Call to Scene constructor to initialize it
@@ -31,7 +26,7 @@ public abstract class GeneralScreen extends Scene {
         root = new StackPane();
         this.setRoot(root);
 
-        // Initialize de canvas and graphics context
+        // Initialize the canvas and graphics context
         Canvas canvas = new Canvas(GAME_WIDTH,GAME_HEIGHT );
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
@@ -40,6 +35,7 @@ public abstract class GeneralScreen extends Scene {
         activeKeys = new HashSet<>();
         releasedKeys = new HashSet<>();
         this.setOnKeyPressed(e -> {
+            releasedKeys.remove(e.getCode());
             activeKeys.add(e.getCode());
         });
         this.setOnKeyReleased(e -> {

@@ -6,7 +6,7 @@ import spacewar.data.GeneralScreen;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class GoodShip extends Ships implements Shoot{
+public class GoodShip extends Ships {
     public static final int GOOD_SHIP_WIDTH = 60;
     public static final int GOOD_SHIP_HEIGHT = 64;
     private static final String IMAGE_PATH = "assets/goodship.png";
@@ -33,9 +33,9 @@ public class GoodShip extends Ships implements Shoot{
     }
     @Override
     public void movement(int movement, int movement2){
+        int newY = y;
+        int newX = x;
         // Moving the ship to a direction
-       int newX = x;
-       int newY = y;
         if (movement == LEFT && movement2 == UP) {
             newY -= Math.min(SHIP_MOVEMENT, y);
             newX -= Math.min(SHIP_MOVEMENT, x);
@@ -69,12 +69,13 @@ public class GoodShip extends Ships implements Shoot{
        animate(movement);
     }
 
+
     public void initialPosition(){
         // The initial position of the ship
        moveTo( 300,
                600);
     }
-
+/*
     @Override
     public void shootingSelect(int shoot) {
         // TO DO
@@ -89,4 +90,6 @@ public class GoodShip extends Ships implements Shoot{
     public void normalShoot() {
         // TO DO
     }
+
+ */
 }
