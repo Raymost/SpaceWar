@@ -25,15 +25,19 @@ import java.util.List;
 
 public class InGameScreen extends GeneralScreen{
     private static final String BACKGROUND_IMAGE="assets/starfield_intro.png";
-    private static final String BACKGROUND_SONG= "";
+    private static final String BACKGROUND_SONG= "assets/music/ingame_music.mp3";
     private static final String SOUND_EFFECT= "";
     private static final int MAX_ENEMYS=6;
     private static int positionCount=0;
     private static boolean playerDeath=false;
     private static boolean shootMore=true;
+    private static boolean bossDeath=false;
+    private static int enemyDead=0;
+    private static int shootCounter=0;
 
     private Image background;
     private static List<GoodShoot> goodShoot = new ArrayList<>();
+    private static List<BadShoot> badShoot = new ArrayList<>();
     private GoodShip ship;
     private static List<BadShip1> enemy1 = new ArrayList<>();
     private static List<BadShip2> enemy2 = new ArrayList<>();
@@ -42,7 +46,7 @@ public class InGameScreen extends GeneralScreen{
     private Boss boss;
     private MediaPlayer mediaPlayerEffects;
     private Media effect;
-    private int lives = 6;
+    private int lives = 4;
     public static int points = 0;
 
     public InGameScreen()
@@ -60,13 +64,13 @@ public class InGameScreen extends GeneralScreen{
     public void draw() {
         reset();
 
-        /*
+
         // Launches music
         sound= new Media(new File(BACKGROUND_SONG).toURI().toString());
         mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.play();
-        */
+
         activeKeys.clear();
         new AnimationTimer()
         {
@@ -80,7 +84,7 @@ public class InGameScreen extends GeneralScreen{
                 ship.draw(gc);
                 updateHUD();
 
-                if(activeKeys.contains(KeyCode.SPACE)) {
+                if(activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
                     SpaceWar.setScene(SpaceWar.GAME_OVER_SCREEN);
                 } else if (activeKeys.contains(KeyCode.ESCAPE)) {
@@ -94,35 +98,42 @@ public class InGameScreen extends GeneralScreen{
                 // Enemy movement
                 enemy1Movement();
 
+                // Boss movement
+                if (enemyDead >= 10)
+                    boosMovement();
+
                 // Collisions between ships
                 collisions();
 
                 // Exit to Game Over when player is dead
-                if (playerDeath){
+                if (playerDeath || bossDeath){
                     this.stop();
                     SpaceWar.setScene(SpaceWar.GAME_OVER_SCREEN);
-                   // savePoints(points);
                 }
+
+                if (shootCounter == 120){
+                    badShootInitialize(20);
+                    badShootInitialize(-20);
+                    shootCounter=0;
+                } else {
+                    shootCounter++;
+                }
+
 
                 // Shoots of the Good ship
                 goodShootMovement();
+                badShootMovement();
             }
         }.start();
     }
-/*
-    private void savePoints(int point){
-        // Save the score externally
-        try{
-            BufferedWriter outputFile = new BufferedWriter(
-                    new FileWriter(new File("points.dat")));
-            outputFile.write(String.valueOf(point));
-            outputFile.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
- */
+    private void boosMovement(){
+        // Movement of the boss
+        if (boss.getY() >= 90)
+            boss.movement(1,0);
+        else if (boss.getY() < 90)
+            boss.movement(0,0);
+    }
 
     private void goodShootInitialize(){
         // Set initial position of the shoot
@@ -130,6 +141,20 @@ public class InGameScreen extends GeneralScreen{
         int lastShoot = goodShoot.size() - 1;
         goodShoot.get(lastShoot).
                 initialPosition(ship.getX(),ship.getY());
+    }
+
+    private void badShootInitialize(int place){
+        // Set initial position of the bad shoot
+        badShoot.add(new BadShoot());
+        int lastShoot = badShoot.size() - 1;
+        badShoot.get(lastShoot).
+                initialPosition((boss.getX()+90)+place,boss.getY()+150);
+        /*
+        for ( BadShip1 enemy: enemy1) {
+            badShoot.add(new BadShoot());
+            badShoot.get(lastShoot).
+                    initialPosition(enemy.getX(),enemy.getY());
+        }*/
     }
 
     private void goodShootMovement(){
@@ -147,6 +172,20 @@ public class InGameScreen extends GeneralScreen{
         }
     }
 
+    private void badShootMovement(){
+        // Movement of the shoot
+        for (int i = 0; i < badShoot.size(); i++) {
+            if (badShoot.get(i) !=null ){
+                badShoot.get(i).draw(gc);
+                badShoot.get(i).movement(1);
+            }
+            // Removing a shoot
+            if (badShoot.get(i).getY() == 800){
+                badShoot.remove(i);
+            }
+        }
+    }
+
     private void collisions() {
         // Collisions with enemy1 and shoot
         for (BadShip1 ship1 : enemy1) {
@@ -155,20 +194,41 @@ public class InGameScreen extends GeneralScreen{
                 ship.setLives(lives--);
                 ship.initialPosition();
                 points += 20;
+                enemyDead++;
                 //playEffect(SOUND_EFFECT);
-                if (ship.getLives() == 0)
-                    playerDeath = true;
             }
             // Deleting shoot if collides
             for (int i = 0; i < goodShoot.size(); i++) {
                 if (ship1.collidesWith(goodShoot.get(i))) {
-                    ship1.setLives(-1);
+                    ship1.hit();
                     points += 20;
                     goodShoot.remove(i);
+                    enemyDead++;
                     //playEffect(SOUND_EFFECT);
+                }else if (boss.collidesWith(goodShoot.get(i))){
+                    boss.hit();
+                    goodShoot.remove(i);
+                    if (boss.getLives() > 0){
+                        bossDeath = false;
+                    } else if (boss.getLives() == 0) {
+                       // bossDeath = true;
+                    }
+                }
+                //if (ship.getLives() == 0)
+                    // playerDeath = true;
+            }
+            // Deleting bad shoot if collides
+            for (int i = 0; i < badShoot.size(); i++) {
+                if (ship.collidesWith(badShoot.get(i))) {
+                    ship.setLives(lives--);
+                    badShoot.remove(i);
+                    //playEffect(SOUND_EFFECT);
+                    if (ship.getLives() == 0)
+                        playerDeath = true;
                 }
             }
-
+            if (boss.getLives() > 0)
+                boss.draw(gc);
             if (ship1.getLives() > 0) {
                 ship1.draw(gc);
             }
@@ -198,7 +258,7 @@ public class InGameScreen extends GeneralScreen{
         int posX;
         int posY;
         // Set initial position of the wave
-        if (positionCount==0){
+        if (positionCount==0 && enemyDead < 10){
             enemyListRefill();
             posX=50;
             posY=-90;
@@ -218,7 +278,7 @@ public class InGameScreen extends GeneralScreen{
                 positionCount++;
             }
         }
-        if (positionCount==2){
+        if (positionCount==2 && enemyDead < 10){
             enemyListRefill();
             posX=-90;
             posY=0;
@@ -237,7 +297,7 @@ public class InGameScreen extends GeneralScreen{
                 positionCount++;
             }
         }
-        if (positionCount==4){
+        if (positionCount==4 && enemyDead < 10){
             enemyListRefill();
             posX=-90;
             posY=200;
@@ -271,26 +331,23 @@ public class InGameScreen extends GeneralScreen{
     private void shipsCharge(){
         // Declare all ships
         for (int i=0; i < MAX_ENEMYS; i++){
-            enemy1.add(new BadShip1(1));
-            enemy1.get(i).setLives(2);
+            enemy1.add(new BadShip1(2));
         }
 
         for (int i=0; i < MAX_ENEMYS; i++){
             enemy2.add(new BadShip2(1));
-            enemy2.get(i).setLives(4);
         }
 
         for (int i=0; i < MAX_ENEMYS; i++){
             enemy3.add(new BadShip3(1));
-            enemy3.get(i).setLives(8);
         }
 
         for (int i=0; i < MAX_ENEMYS; i++){
             enemy4.add(new BadShip4(1));
-            enemy4.get(i).setLives(16);
         }
 
-        boss = new Boss(1000);
+        boss = new Boss(20);
+
         ship= new GoodShip(lives);
     }
 
@@ -331,8 +388,9 @@ public class InGameScreen extends GeneralScreen{
 
     private void reset(){
         ship.initialPosition();
-        lives = 6;
+        lives = 4;
         points = 0;
+        boss.initialPosition();
     }
 
     private void updateHUD(){

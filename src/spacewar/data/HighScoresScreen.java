@@ -16,14 +16,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 public class HighScoresScreen extends InGameScreen {
     private static final String NAMEFILE = "highscores.dat";
     private static final String BACKGROUND_IMAGE="assets/starfield_intro.png";
-    private static String writeText;
-    private final ArrayList<String> writeKey = loadKeys();
-    private final ArrayList<HighScores> highScores = loadScore();
+    private static String writeText="";
+    private ArrayList<HighScores> highScores = loadScore();
     private static boolean endWrite=true;
     private static boolean onlyOne=true;
     private Image background;
@@ -69,10 +69,9 @@ public class HighScoresScreen extends InGameScreen {
                 gc.fillRect(0,0,GAME_WIDTH,GAME_HEIGHT);
                 gc.drawImage(background,0,0);
                 if(endWrite) {
-                    showWriteYourName();
                     writeNameKeys();
+                    showWriteYourName();
                 }
-                savingKeys();
 
                 if(activeKeys.contains(KeyCode.SPACE)) {
                     this.stop();
@@ -86,27 +85,29 @@ public class HighScoresScreen extends InGameScreen {
             }
         }.start();
     }
+
     private void savingKeys(){
-        if (onlyOne) {
-            if (activeKeys.contains(KeyCode.ENTER)) {
-                endWrite = false;
-                //loadPoints();
-                highScores.add(new HighScores(InGameScreen.points, writeText));
-                saveScore(highScores);
-                onlyOne = false;
-            }
-        }
+        endWrite = false;
+        highScores.add(new HighScores(InGameScreen.points, writeText));
+        saveScore(highScores);
+        highScores = loadScore();
+        SpaceWar.setScene(SpaceWar.HIGHSCORES_SHOW_SCREEN);
     }
 
     private void writeNameKeys(){
         // Write the inputKeys on screen
-        for (int i = 0; i < writeKey.size(); i++) {
-            if(activeKeys.contains(writeKey.get(i))){
-                String[] items = writeKey.get(i).split(".");
-                writeText+=items[1];
-                System.out.println(writeText);
+        for (KeyCode k : activeKeys) {
+            if (k == KeyCode.ENTER) {
+                savingKeys();
+                return;
+            } else if (k == KeyCode.BACK_SPACE) {
+                writeText= writeText.substring(0,
+                        writeText.length() - 1);
+            } else {
+                writeText += k;
             }
         }
+        activeKeys.clear();
     }
 
     private ArrayList<HighScores> loadScore(){
@@ -134,56 +135,14 @@ public class HighScoresScreen extends InGameScreen {
         return scores;
     }
 
-    protected ArrayList<String> loadKeys(){
-        // Loading the input keys for write a name
-        ArrayList<String> inputKeys = new ArrayList<String>();
-        if (new File("inputKeys.dat").exists() ) {
-            try {
-                BufferedReader inputFile = new BufferedReader(
-                        new FileReader(new File("inputKeys.dat")));
-
-                String line = inputFile.readLine();
-                while (line != null) {
-                    inputKeys.add(line);
-                    line = inputFile.readLine();
-                }
-                inputFile.close();
-
-            } catch (IOException fileError){
-                System.out.println("We have a problem: " +
-                        fileError.getMessage());
-            }
-        }
-        return inputKeys;
-    }
-/*
-    protected void loadPoints(){
-        // Loading the points
-        if (new File("points.dat").exists() ) {
-            try {
-                BufferedReader inputFile = new BufferedReader(
-                        new FileReader(new File("points.dat")));
-                String line = inputFile.readLine();
-                points = Integer.parseInt(line);
-                inputFile.close();
-            } catch (IOException fileError){
-                System.out.println("We have a problem: " +
-                        fileError.getMessage());
-            }
-        }
-    }
-
- */
-
     protected void saveScore(List<HighScores> scores){
         // Sorted by Score
         scores.sort(new Comparator<HighScores>() {
             @Override
             public int compare(HighScores h1, HighScores h2) {
-                return Integer.toString( h1.getScore()).compareTo(Integer.toString(h2.getScore()));
+                return  h1.getScore() > h2.getScore() ? -1 : 1;
             }
         });
-
         // Saving the array in a file
         try{
             BufferedWriter outputFile = new BufferedWriter(

@@ -2,6 +2,8 @@ package spacewar.data;
 
 
 import javafx.animation.AnimationTimer;
+import javafx.scene.effect.Bloom;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -21,15 +23,21 @@ public class GameOverScreen extends GeneralScreen{
     }
 
     private void showGameOverMessage() {
-        Font myFont = Font.font("Arial", FontWeight.NORMAL, 32);
+        Bloom bloom = new Bloom();
+        bloom.setThreshold(0.2);
+
+        Font myFont = Font.font("System", FontWeight.NORMAL, 50);
         gc.setFont(myFont);
-        gc.setFill(Color.RED);
+        gc.setFill(Color.GREENYELLOW);
+        gc.setEffect(bloom);
+        gc.applyEffect(new DropShadow(5,Color.BLACK));
         gc.fillText("GAME OVER", 275, 200);
 
-        myFont = Font.font("Arial", FontWeight.NORMAL, 20);
+        myFont = Font.font("Arial", FontWeight.NORMAL, 30);
         gc.setFont(myFont);
-        gc.setFill(Color.RED);
-        gc.fillText("Press Spacebar to next", 325, 275);
+        gc.setFill(Color.YELLOWGREEN);
+        gc.applyEffect(new DropShadow(5,Color.BLACK));
+        gc.fillText("Press Spacebar to next", 300, 300);
     }
     private void playEffect(String sound){}
 

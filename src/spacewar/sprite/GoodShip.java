@@ -75,21 +75,4 @@ public class GoodShip extends Ships {
        moveTo( 300,
                600);
     }
-/*
-    @Override
-    public void shootingSelect(int shoot) {
-        // TO DO
-    }
-
-    @Override
-    public void bigShoot() {
-        // TO DO
-    }
-
-    @Override
-    public void normalShoot() {
-        // TO DO
-    }
-
- */
 }

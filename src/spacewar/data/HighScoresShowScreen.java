@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class HighScoresShowScreen extends GeneralScreen {
     private static final String NAMEFILE = "highscores.dat";
@@ -35,30 +36,27 @@ public class HighScoresShowScreen extends GeneralScreen {
         gc.setFont(myFont);
         gc.setFill(Color.YELLOWGREEN);
         gc.applyEffect(new DropShadow(5,Color.BLACK));
-        gc.fillText("HIGHSCORES", 350, 100);
+        gc.fillText("HIGHSCORES", 200, 100);
 
         Bloom bloom = new Bloom();
         bloom.setThreshold(0.1);
 
-        myFont = Font.font("System", FontWeight.NORMAL, 20);
+        myFont = Font.font("System", FontWeight.NORMAL, 30);
         gc.setFont(myFont);
         gc.setFill(Color.YELLOWGREEN);
         gc.applyEffect(new DropShadow(5,Color.BLACK));
         gc.setEffect(bloom);
-        int x=300;
-        int y=400;
+        int x=250;
+        int y=200;
         for (HighScores h: highScores) {
-            gc.fillText(h.toString(), x, y);
-            System.out.println(h);
+            gc.fillText(h.toString().toUpperCase(), x, y);
             y+=50;
         }
-            //gc.fillText(line, 300, 400);
-
     }
 
     @Override
     public void draw() {
-
+        highScores = loadScore();
         activeKeys.clear();
         new AnimationTimer()
         {
@@ -68,11 +66,12 @@ public class HighScoresShowScreen extends GeneralScreen {
                 gc.setFill(Color.BLACK);
                 gc.fillRect(0,0,GAME_WIDTH,GAME_HEIGHT);
                 gc.drawImage(background,0,0);
-                if(activeKeys.contains(KeyCode.SPACE)) {
+                showHighScore();
+
+                if(activeKeys.contains(KeyCode.SPACE) || activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
                     SpaceWar.setScene(SpaceWar.CREDITS_SCREEN);
                 }
-
                 if (activeKeys.contains(KeyCode.ESCAPE)) {
                     this.stop();
                     SpaceWar.exit();
@@ -85,7 +84,6 @@ public class HighScoresShowScreen extends GeneralScreen {
         ArrayList<HighScores> scores = new ArrayList<HighScores>();
         if (new File(NAMEFILE).exists() ) {
             try {
-
                 BufferedReader inputFile = new BufferedReader(
                         new FileReader(new File(NAMEFILE)));
 
@@ -94,10 +92,6 @@ public class HighScoresShowScreen extends GeneralScreen {
                     String[] items = line.split(";");
                     scores.add(new HighScores(Integer.parseInt(items[0]),
                             items[1]));
-                    System.out.println(scores.get(0));
-                    System.out.println(items.length + "comemelo todo");
-                    System.out.println(Integer.parseInt(items[0]) + items[1]);
-                    System.out.println(line);
                     line = inputFile.readLine();
                 }
                 inputFile.close();
@@ -106,7 +100,6 @@ public class HighScoresShowScreen extends GeneralScreen {
                                 fileError.getMessage());
             }
         }
-        System.out.println(scores.get(0) + "pollas");
         return scores;
     }
 }

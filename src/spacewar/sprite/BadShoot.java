@@ -24,7 +24,7 @@ public class BadShoot extends AnimatedSprite{
     }
 
     public void movement(int select){
-        this.y -= SHOOT_MOVEMENT;
+        this.y += SHOOT_MOVEMENT;
     }
 
     public void initialPosition(int posX, int posY){

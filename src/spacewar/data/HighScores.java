@@ -5,6 +5,8 @@ public class HighScores  {
     private String name;
 
     public HighScores(int score, String name){
+        this.score = score;
+        this.name = name;
     }
 
     public String getName() {
