@@ -14,7 +14,10 @@ import spacewar.SpaceWar;
 import spacewar.sprite.*;
 
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -40,7 +43,7 @@ public class InGameScreen extends GeneralScreen{
     private MediaPlayer mediaPlayerEffects;
     private Media effect;
     private int lives = 6;
-    private int points = 0;
+    public static int points = 0;
 
     public InGameScreen()
     {
@@ -98,14 +101,30 @@ public class InGameScreen extends GeneralScreen{
                 if (playerDeath){
                     this.stop();
                     SpaceWar.setScene(SpaceWar.GAME_OVER_SCREEN);
+                   // savePoints(points);
                 }
 
                 // Shoots of the Good ship
                 goodShootMovement();
             }
         }.start();
+    }
+/*
+    private void savePoints(int point){
+        // Save the score externally
+        try{
+            BufferedWriter outputFile = new BufferedWriter(
+                    new FileWriter(new File("points.dat")));
+            outputFile.write(String.valueOf(point));
+            outputFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    } private void goodShootInitialize(){
+ */
+
+    private void goodShootInitialize(){
         // Set initial position of the shoot
         goodShoot.add(new GoodShoot());
         int lastShoot = goodShoot.size() - 1;
@@ -140,44 +159,38 @@ public class InGameScreen extends GeneralScreen{
                 if (ship.getLives() == 0)
                     playerDeath = true;
             }
-            for (GoodShoot shoot : goodShoot) {
-                if (ship1.collidesWith(shoot)) {
+            // Deleting shoot if collides
+            for (int i = 0; i < goodShoot.size(); i++) {
+                if (ship1.collidesWith(goodShoot.get(i))) {
                     ship1.setLives(-1);
                     points += 20;
+                    goodShoot.remove(i);
                     //playEffect(SOUND_EFFECT);
                 }
             }
+
             if (ship1.getLives() > 0) {
                 ship1.draw(gc);
             }
         }
     }
 
-    private void enemyNoLives(int enemy,int i, int posX, int posY){
+    private void enemyNoLives(int enemy,int i){
+        // When a enemy die move it to another position
+        int deadPosX=-150;
+        int deadPosY=1000;
         if (enemy == 1) {
-            if (enemy1.get(i).getLives() > 0)
-                enemy1.get(i).moveTo(posX, posY);
-            else {
-                enemy1.get(i).moveTo(-150, 900);
-            }
+            if (enemy1.get(i).getLives() <= 0)
+                enemy1.get(i).moveTo(deadPosX, deadPosY);
         } else if (enemy == 2) {
-            if (enemy2.get(i).getLives() > 0)
-                enemy2.get(i).moveTo(posX, posY);
-            else {
-                enemy2.get(i).moveTo(-150, 900);
-            }
+            if (enemy2.get(i).getLives() <= 0)
+                enemy2.get(i).moveTo(deadPosX, deadPosY);
         } else if (enemy == 3) {
-            if (enemy3.get(i).getLives() > 0)
-                enemy3.get(i).moveTo(posX, posY);
-            else {
-                enemy3.get(i).moveTo(-150, 900);
-            }
+            if (enemy3.get(i).getLives() <= 0)
+                enemy3.get(i).moveTo(deadPosX, deadPosY);
         } else if (enemy == 4) {
-            if (enemy3.get(i).getLives() > 0)
-                enemy3.get(i).moveTo(posX, posY);
-            else {
-                enemy3.get(i).moveTo(-150, 900);
-            }
+            if (enemy4.get(i).getLives() <= 0)
+                enemy4.get(i).moveTo(deadPosX, deadPosY);
         }
     }
 
@@ -190,15 +203,16 @@ public class InGameScreen extends GeneralScreen{
             posX=50;
             posY=-90;
             for (int i=0; i < enemy1.size(); i++){
-                enemyNoLives(1,i,posX,posY);
+                enemy1.get(i).moveTo(posX, posY);
                 posX += 100;
                 posY -= 90;
             }
             positionCount++;
         // Doing the movement
         } else if (positionCount==1){
-            for (BadShip1 badShip1 : enemy1) {
-                badShip1.movement(0, 1);
+            for (int i = 0; i < enemy1.size(); i++) {
+                enemy1.get(i).movement(0, 1);
+                enemyNoLives(1,i);
             }
             if (enemy1.get(5).getY() >= GAME_HEIGHT + 81){
                 positionCount++;
@@ -209,14 +223,15 @@ public class InGameScreen extends GeneralScreen{
             posX=-90;
             posY=0;
             for (int i=0; i < enemy1.size(); i++){
-                enemyNoLives(1,i,posX,posY);
+                enemy1.get(i).moveTo(posX, posY);
                 posX -= 100;
                 posY -= 90;
             }
             positionCount++;
         } else if (positionCount==3){
-            for (BadShip1 badShip1 : enemy1) {
-                badShip1.movement(1, 1);
+            for (int i = 0; i < enemy1.size(); i++) {
+                enemy1.get(i).movement(1, 1);
+                enemyNoLives(1,i);
             }
             if (enemy1.get(5).getY() >= GAME_HEIGHT + 81){
                 positionCount++;
@@ -227,18 +242,20 @@ public class InGameScreen extends GeneralScreen{
             posX=-90;
             posY=200;
             for (int i=0; i < enemy1.size(); i++){
-                enemyNoLives(1,i,posX,posY);
+                enemy1.get(i).moveTo(posX, posY);
                 posX -= 100;
             }
             positionCount++;
         } else if (positionCount==5){
-            for (BadShip1 badShip1 : enemy1) {
-                badShip1.movement(2, 1);
+            for (int i = 0; i < enemy1.size(); i++) {
+                enemy1.get(i).movement(2, 1);
+                enemyNoLives(1,i);
             }
             if (enemy1.get(5).getX() >= GAME_WIDTH +
-                    BadShip1.BAD_SHIP_WIDTH){
+                    BadShip1.BAD_SHIP_WIDTH || enemy1.get(5).getY() == 1000){
                 positionCount=0;
             }
+
         }
     }
 
@@ -255,7 +272,7 @@ public class InGameScreen extends GeneralScreen{
         // Declare all ships
         for (int i=0; i < MAX_ENEMYS; i++){
             enemy1.add(new BadShip1(1));
-            enemy1.get(i).setLives(1);
+            enemy1.get(i).setLives(2);
         }
 
         for (int i=0; i < MAX_ENEMYS; i++){
@@ -314,7 +331,7 @@ public class InGameScreen extends GeneralScreen{
 
     private void reset(){
         ship.initialPosition();
-        lives = 3;
+        lives = 6;
         points = 0;
     }
 

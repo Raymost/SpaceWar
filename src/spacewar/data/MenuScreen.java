@@ -31,7 +31,6 @@ public class MenuScreen extends GeneralScreen{
 
     public MenuScreen(){
         super();
-        showMenu();
         try {
             background = new Image(Files.newInputStream(Paths.get(BACKGROUND_IMAGE)));
             for (int i = 0; i < BUTTONS.length; i++) {
@@ -40,18 +39,6 @@ public class MenuScreen extends GeneralScreen{
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    private void showMenu() {
-        Font myFont = Font.font("Arial", FontWeight.NORMAL, 32);
-        gc.setFont(myFont);
-        gc.setFill(Color.RED);
-        gc.fillText("MENUUUUUUUUU", 275, 200);
-
-        myFont = Font.font("Arial", FontWeight.NORMAL, 20);
-        gc.setFont(myFont);
-        gc.setFill(Color.RED);
-        gc.fillText("Press Spacebar to play", 325, 275);
     }
 
     @Override
@@ -100,7 +87,7 @@ public class MenuScreen extends GeneralScreen{
                     SpaceWar.setScene(SpaceWar.IN_GAME_SCREEN);
                 } else if( count >= 1 && count <= 5 && activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
-                    SpaceWar.setScene(SpaceWar.HIGHSCORES_SCREEN);
+                    SpaceWar.setScene(SpaceWar.HIGHSCORES_SHOW_SCREEN);
                 } else if( count == 6 && activeKeys.contains(KeyCode.ENTER)) {
                     this.stop();
                     SpaceWar.exit();

@@ -13,7 +13,8 @@ public class SpaceWar extends Application {
     public static final int IN_GAME_SCREEN = 2;
     public static final int GAME_OVER_SCREEN = 3;
     public static final int HIGHSCORES_SCREEN = 4;
-    public static final int CREDITS_SCREEN = 5;
+    public static final int HIGHSCORES_SHOW_SCREEN = 5;
+    public static final int CREDITS_SCREEN = 6;
 
     public static final GeneralScreen[] scenes =
             new GeneralScreen[MAX_SCENES];
@@ -29,7 +30,8 @@ public class SpaceWar extends Application {
         scenes[2] = new InGameScreen();
         scenes[3] = new GameOverScreen();
         scenes[4] = new HighScoresScreen();
-        scenes[5] = new CreditsScreen();
+        scenes[5] = new HighScoresShowScreen();
+        scenes[6] = new CreditsScreen();
 
 
         stage.setTitle("SpaceWar");

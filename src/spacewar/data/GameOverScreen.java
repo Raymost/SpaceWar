@@ -13,8 +13,7 @@ import java.util.List;
 
 public class GameOverScreen extends GeneralScreen{
     public static final String SOUND_EFFECT="";
-    public static List<HighScoresScreen> score =
-            new ArrayList<HighScoresScreen>();
+
 
     public GameOverScreen(){
         super();
@@ -34,7 +33,7 @@ public class GameOverScreen extends GeneralScreen{
     }
     private void playEffect(String sound){}
 
-    private void putYourName(List<HighScoresScreen> name)
+    private void putYourName(List<HighScores> name)
     {
         // TO DO
     }
